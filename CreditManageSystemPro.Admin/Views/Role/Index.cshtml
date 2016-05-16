@@ -1,0 +1,192 @@
+﻿@model CreditManageSystemPro.Admin.Models.AddRoleModel
+@{
+    ViewBag.Title = "角色";
+}
+<link href="@Url.Content("~/Content/bootstrap.min.css?v=3.3.5")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Content/font-awesome.min.css?v=4.4.0")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Content/animate.min.css")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Content/style.min.css?v=4.0.0")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Content/plugins/jsTree/style.min.css")" rel="stylesheet">
+<link href="@Url.Content("~/Scripts/plugins/layer/skin/layer.css")" rel="stylesheet">
+<body class="gray-bg">
+<div class="wrapper wrapper-content  animated fadeInRight">
+    <input type="hidden" value="0" id="selectedRoleId" />
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>
+                        角色</h5>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-primary " type="button" id="add">
+                        <i class="fa fa-plus"></i>&nbsp;新增角色</button>&nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-primary " type="button" id="edit">
+                        <i class="fa fa-edit"></i>&nbsp;编辑角色</button>&nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-primary " type="button" id="delete">
+                        <i class="fa fa-trash"></i>&nbsp;删除角色</button>
+                    <div class="ibox-tools">
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div id="using_json">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <script src="@Url.Content("~/Scripts/jquery.min.js?v=2.1.4")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/bootstrap.min.js?v=3.3.5")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/layer/layer.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/jsTree/jstree.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/validate/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/validate/messages_zh.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/demo/form-validate-demo.min.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        var selectedRoleId = 0;
+        //将form转为AJAX提交
+        function ajaxSubmit(frm, fn) {
+            var dataPara = getFormJson(frm);
+            $.ajax({
+                url: frm.action,
+                type: frm.method,
+                data: dataPara,
+                success: fn
+            });
+        }
+
+        //将form中的值转换为键值对。
+        function getFormJson(frm) {
+            var o = {};
+            var a = $(frm).serializeArray();
+            $.each(a, function () {
+                if (o[this.name] !== undefined) {
+                    if (!o[this.name].push) {
+                        o[this.name] = [o[this.name]];
+                    }
+                    o[this.name].push(this.value || '');
+                } else {
+                    o[this.name] = this.value || '';
+                }
+            });
+            return o;
+        }
+
+        function showTree() {
+            $.ajax({
+                type: "post",
+                url: "/admin/Role/Jstree",
+                async: false,
+                dataType: "text",
+                success: function (data) {
+                    createTree(data);
+                }
+            });
+        }
+
+        function createTree(datastr) {
+            datastr = eval('(' + datastr + ')');
+
+            $('#using_json').jstree({
+                'plugins': ["themes", "checkbox", "types", "dnd"],
+                'core': {
+                    "animation": 0,
+                    "multiple": false,
+                    "data": datastr,
+                    "check_callback": true
+                },
+                "types": {
+                    "default": {
+                        "icon": "fa fa-folder icon-state-warning icon-lg"
+                    },
+                    "file": {
+                        "icon": "fa fa-file icon-state-warning icon-lg"
+                    }
+                }
+            })
+            .bind("select_node.jstree", function (event, data) {
+                var i, j, roleid;
+                for (i = 0, j = data.selected.length; i < j; i++) {
+                    roleid = data.instance.get_node(data.selected[i]).id;
+                }
+                $("#selectedRoleId").val(roleid);
+            })
+            .bind("delete_node.jstree", function (event, data) {
+
+            })
+            .bind("deselect_node.jstree", function (event, data) {
+                $("#selectedRoleId").val("0");
+            });
+        }
+
+        //增加角色事件
+        $('#add').on("click", function () {
+            layer.open({
+                type: 2, //page层
+                area: ['60%', '70%'],
+                title: '新增角色',
+                shade: 0.2, //遮罩透明度
+                shadeClose: false,
+                maxmin: true,
+                moveType: 1, //拖拽风格，0是默认，1是传统拖动
+                shift: 1, //0-6的动画形式，-1不开启
+                content: 'Add'
+            });
+        });
+
+        //编辑权限事件
+        $('#edit').on("click", function () {
+            if (parseInt($("#selectedRoleId").val()) == 0) {
+                alert("请您选择要编辑的角色");
+            } else {
+                layer.open({
+                    type: 2, //page层
+                    area: ['60%', '70%'],
+                    title: '编辑角色',
+                    shade: 0.2, //遮罩透明度
+                    shadeClose: false,
+                    maxmin: true,
+                    moveType: 1, //拖拽风格，0是默认，1是传统拖动
+                    shift: 1, //0-6的动画形式，-1不开启
+                    content: 'Update?roleId='+$("#selectedRoleId").val()
+                });
+            }
+        });
+
+        $("#delete").on("click", function () {
+            if (parseInt($("#selectedRoleId").val()) == 0) {
+                alert("请您选择要删除的角色");
+            }
+            else {
+                if (confirm('确定要删除所选角色吗?')) {
+                    $.ajax({
+                        type: "post",
+                        url: "/admin/Role/Delete",
+                        data: { id: $("#selectedRoleId").val() },
+                        dataType: "text",
+                        success: function (data) {
+                            var datastr = eval('(' + data + ')');
+                            if (datastr.success) {
+                                $('#using_json').jstree().destroy();
+                                $("#selectedRoleId").val("0");
+                                showTree();
+                                alert(datastr.msg);
+                            } else {
+                                alert(datastr.msg);
+                            }
+                        },
+                        error: function (data) {
+                            var datastr = eval('(' + data + ')');
+                            alert(datastr.msg);
+                            data.instance.refresh();
+                        }
+                    });
+                }
+            }
+        });
+        $(document).ready(function () {
+            showTree();
+        });
+
+    </script>
+</body>

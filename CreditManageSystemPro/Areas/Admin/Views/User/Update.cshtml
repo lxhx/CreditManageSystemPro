@@ -1,0 +1,216 @@
+﻿@using CreditManageSystemPro.Admin.Models
+@using CreditManageSystemPro.Admin.Utility
+@model CreditManageSystemPro.Admin.Models.UpdateUserModel
+@{
+    ViewBag.Title = "Update";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="@Url.Content("~/Content/bootstrap.min.css?v=3.3.5")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/font-awesome.min.css?v=4.4.0")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/animate.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/style.min.css?v=4.0.0")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/Scripts/jquery.min.js?v=2.1.4")" type="text/javascript"></script>
+    @*<script src="@Url.Content("~/Scripts/uploader.js")" type="text/javascript"></script>*@
+    <script type="text/javascript">
+        //将form转为AJAX提交
+        function ajaxSubmit(frm, fn) {
+            var dataPara = getFormJson(frm);
+            $.ajax({
+                url: "/Admin/User/Update",
+                type: frm.method,
+                data: dataPara,
+                success: fn,
+                error: function (data) { alert('错误'); }
+            });
+        }
+
+        //将form中的值转换为键值对。
+        function getFormJson(frm) {
+            var o = {};
+            var a = $(frm).serializeArray();
+            $.each(a, function () {
+                if (o[this.name] !== undefined) {
+                    if (!o[this.name].push) {
+                        o[this.name] = [o[this.name]];
+                    }
+                    o[this.name].push(this.value || '');
+                } else {
+                    o[this.name] = this.value || '';
+                }
+            });
+            return o;
+        }
+
+        //调用
+        $(document).ready(function () {
+            //$("#upload-img").InitUploader();
+            $("#password").val("@ViewBag.userPASS");
+            $("#confirm_password").val("@ViewBag.userPASS");
+            $("#preview").bind("click", function () {
+                if ($(this).text().trim() == "预览") {
+                    $(".previewImg").css("display", "block");
+                    $(this).children("span").text("取消预览");
+                } else {
+                    $(".previewImg").css("display", "none");
+                    $(this).children("span").text("预览");
+                }
+            });
+            //绑定submit提交事件
+            $('#commentForm').bind('submit', function () {
+                var e = "<i class='fa fa-times-circle'></i> ";
+                $("#commentForm").validate({
+                    rules: {
+                        username: {
+                            required: !0,
+                            minlength: 2
+                        },
+                        password: {
+                            required: !0,
+                            minlength: 5
+                        },
+                        confirm_password: {
+                            required: !0,
+                            minlength: 5,
+                            equalTo: "#password"
+                        }
+                    },
+                    messages: {
+                        username: {
+                            required: e + "请输入您的用户名",
+                            minlength: e + "用户名必须两个字符以上"
+                        },
+                        password: {
+                            required: e + "请输入您的密码",
+                            minlength: e + "密码必须5个字符以上"
+                        },
+                        confirm_password: {
+                            required: e + "请再次输入密码",
+                            minlength: e + "密码必须5个字符以上",
+                            equalTo: e + "两次输入的密码不一致"
+                        }
+                    }
+                });
+                if ($(this).valid()) {
+                    ajaxSubmit(this, function (data) {
+                        alert(data.msg);
+                        if (data.success) {
+                            window.location.href = "/Admin/User/AllUser";
+                        }
+                    });
+                    return false;
+                }
+            });
+        });
+    </script>
+    <title>编辑用户</title>
+</head>
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>
+                            编辑用户 <small>填写完整的用户信息</small></h5>
+                        <div class="ibox-tools">
+                            <a class="close-link"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <form class="form-horizontal" id="commentForm" method="post">
+                            <div class="form-group">
+                                <div class="col-sm-8">
+                                    @Html.HiddenFor(model => model.userId, new { @class = "form-control", @required = "required", @id = "userId" })
+                                    @Html.HiddenFor(model => model.UserProfile.salt, new { @class = "form-control", @required = "required", @id = "salt" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">
+                                    用户名</label>
+                                <div class="col-sm-8">
+                                    @Html.TextBoxFor(model => model.userName, new {@class = "form-control", @required = "required", name = "username", @id = "username"})
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed">
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">
+                                    密码</label>
+                                <div class="col-sm-8">
+                                    @Html.PasswordFor(model => model.UserProfile.password, new {@class = "form-control", @required = "required", name = "password", @id = "password"})
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed">
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">
+                                    确认密码</label>
+                                <div class="col-sm-8">
+                                    @Html.PasswordFor(model => model.RePassword, new {@class = "form-control", @required = "required", name = "confirm_password", @id = "confirm_password"})
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed">
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">
+                                    用户角色</label>
+                                <div class="col-sm-8">
+                                    @Html.DropDownListFor(model => model.roleId, ViewData["select"] as SelectList, new {@class = "form-control", @required = "required", @id = "roleName"})
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed">
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">
+                                    选择头像</label>
+                                <div class="col-sm-8">
+                                    <input type="file" class="form-control upload-path"/>
+                                </div>
+                                <div>
+                                    <button id="preview" class="btn btn-white " type="button">
+                                        <span>预览</span></button>
+                                </div>
+                            </div>
+                            <div class="form-group previewImg" style="display: none">
+                                <label class="col-sm-2 control-label">
+                                    图片预览</label>
+                                <div class="col-md-6">
+                                    <div class="img-preview img-preview-sm" id="upload-img">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed">
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">
+                                    备注</label>
+                                <div class="col-sm-8">
+                                    @Html.TextAreaFor(model => model.UserProfile.userNote, new {@class = "form-control", name = "remark", @id = "remark"})
+                                    <span class="help-block m-b-none">对用户所作的备注信息</span>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed">
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <button class="btn btn-primary" type="submit">
+                                        保存内容</button>
+                                    <button class="btn btn-white" type="button">
+                                        取消</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="@Url.Content("~/Scripts/bootstrap.min.js?v=3.3.5")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/content.min.js?v=1.0.0")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/validate/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/validate/messages_zh.min.js")" type="text/javascript"></script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+﻿@model CreditManageSystemPro.Admin.Models.UpdatePrivilegeModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="@Url.Content("~/Content/bootstrap.min.css?v=3.3.5")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/font-awesome.min.css?v=4.4.0")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/animate.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/style.min.css?v=4.0.0")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/plugins/chosen/chosen.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/plugins/layer/skin/layer.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/Scripts/jquery.min.js?v=2.1.4")" type="text/javascript"></script>
+    @*<script src="@Url.Content("~/Scripts/jquery.metadata.js")" type="text/javascript"></script>*@
+    <script type="text/javascript">
+        //将form转为AJAX提交
+        function ajaxSubmit(frm, fn) {
+            var dataPara = getFormJson(frm);
+            $.ajax({
+                url: frm.action,
+                type: frm.method,
+                data: dataPara,
+                success: fn
+            });
+        }
+
+        //将form中的值转换为键值对。
+        function getFormJson(frm) {
+            var o = {};
+            var a = $(frm).serializeArray();
+            $.each(a, function () {
+                if (o[this.name] !== undefined) {
+                    if (!o[this.name].push) {
+                        o[this.name] = [o[this.name]];
+                    }
+                    o[this.name].push(this.value || '');
+                } else {
+                    o[this.name] = this.value || '';
+                }
+            });
+            return o;
+        }
+
+        //调用
+        $(document).ready(function () {
+            var selectedPrivilegeId = parent.$("#selectedPrivilegeId").val();
+            $.ajax({
+                type: "post",
+                url: "/admin/Privilege/Details",
+                data: { id: selectedPrivilegeId },
+                dataType: "text",
+                success: function (data) {
+                    var datastr = eval('(' + data + ')');
+                    $("#privilegeId").val(datastr.privilegeId);
+                    $("#privilegeName").val(datastr.privilegeName);
+                    $("#privilegeNote").val(datastr.privilegeNote);
+                }
+            });
+            $('#commentForm').bind('submit', function () {
+                $(this).validate();
+                if ($(this).valid()) {
+                    ajaxSubmit(this, function (data) {
+                        alert(data.msg);
+                        if (data.success) {
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.$('#using_json').jstree().destroy();
+                            parent.$("#selectedPrivilegeId").val("0");
+                            parent.showTree();
+                            parent.layer.close(index);
+                        }
+                    });
+                    return false;
+                } else {
+                    ajaxSubmit(this, function (data) {
+                        alert(data.msg);
+                    });
+                }
+            });
+        });
+    </script>
+    <title>编辑权限</title>
+</head>
+<body>
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <form class="form-horizontal m-t" id="commentForm" method="post" action="@Url.Action("Update", "Privilege")">
+        <div class="form-group">
+            <div class="col-sm-8">
+                @Html.HiddenFor(model => model.privilegeId, new { @class = "form-control", @required = "required", @id = "privilegeId" })
+            </div>
+        </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">
+                    权限名称：</label>
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(model => model.privilegeName, new {@class = "form-control", @required = "required", @id = "privilegeName"})
+                </div>
+            </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">
+                菜单名称：</label>
+            <div class="col-sm-8">
+                @Html.DropDownListFor(model => model.menuId,ViewData["select"] as SelectList, new { @class = "form-control", @required = "required", @id = "privilegeName" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">
+                描述：</label>
+            <div class="col-sm-8">
+                @Html.TextAreaFor(model => model.privilegeNote, new { @class = "form-control", @id = "privilegeNote" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-4 col-xs-offset-5">
+                <button class="btn btn-primary required" type="submit">
+                    提交</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+        </div>
+        </form>
+    </div>
+    <script src="@Url.Content("~/Scripts/plugins/validate/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/validate/messages_zh.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/demo/form-validate-demo.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/chosen/chosen.jquery.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/demo/form-advanced-demo.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/layer/layer.js")" type="text/javascript"></script>
+</body>
+</html>
