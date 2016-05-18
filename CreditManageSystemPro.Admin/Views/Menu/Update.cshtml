@@ -19,7 +19,7 @@
         function ajaxSubmit(frm, fn) {
             var dataPara = getFormJson(frm);
             $.ajax({
-                url: frm.action,
+                url: "@Url.Action("Update", "Menu")",
                 type: frm.method,
                 data: dataPara,
                 success: fn
@@ -65,11 +65,13 @@
                 if ($(this).valid()) {
                     ajaxSubmit(this, function (data) {
                         alert(data.msg);
-                        var index = parent.layer.getFrameIndex(window.name);
-                        parent.$('#using_json').jstree().destroy();
-                        parent.$("#selectedMenuId").val("0");
-                        parent.showTree();
-                        parent.layer.close(index);
+                        if (data.success) {
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.$('#using_json').jstree().destroy();
+                            parent.$("#selectedMenuId").val("0");
+                            parent.showTree();
+                            parent.layer.close(index);
+                        } 
                     });
                     return false;
                 } else {
@@ -84,7 +86,7 @@
 </head>
 <body>
     <div class="wrapper wrapper-content animated fadeInRight">
-        <form class="form-horizontal m-t" id="commentForm" method="post" action="@Url.Action("Update", "Menu")">
+        <form class="form-horizontal m-t" id="commentForm" method="post">
         <div class="form-group">
             <div class="col-sm-8">
                 @Html.HiddenFor(model => model.menuId, new { @class = "form-control", @required = "required", @id = "menuId" })

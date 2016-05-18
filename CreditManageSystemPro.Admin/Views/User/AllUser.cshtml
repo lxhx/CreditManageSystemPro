@@ -58,7 +58,7 @@
                                     {
                                         <tr>
                                             <td>
-                                                <input type="checkbox" class="i-checks" />
+                                                <input type="checkbox" name="usercheck" class="i-checks" value="@userProfile.userId" />
                                             </td>
                                             <td class="project-title">
                                                 @userProfile.user.userName
@@ -82,48 +82,45 @@
         $('#add').on("click", function () {
             window.location.href = "/Admin/User/AddUser";
         });
+        //删除用户事件
         $("#delete").on("click", function () {
+            //alert($("input[type='checkbox']:checked").length);
+            if ($("input[type='checkbox']:checked").length < 1) {
+                layer.msg('对不起，请选中您要操作的记录！', {
+                    time: 3000, //3s后自动关闭
+                    btn: ['确定']
+                });
+                return false;
+            }
             var msg = "删除记录后不可恢复，您确定吗？";
-            layer.open({
-                type: 1,
-                content: msg,
-                area: 'auto',
-                btn: ['确定', '取消'],
-                yes: function (index, layero) {
-                    alert(123); 
-                    layer.close(index);
-                }
-            });
-            if (parseInt($("#selectedPrivilegeId").val()) == 0) {
-                alert("请您选择要删除的权限");
-            }
-            else {
-                if (confirm('确定要删除所选权限吗?')) {
-                    $.ajax({
-                        type: "post",
-                        url: "/admin/Privilege/Delete",
-                        data: { id: $("#selectedPrivilegeId").val() },
-                        dataType: "text",
-                        success: function (data) {
-                            var datastr = eval('(' + data + ')');
-                            if (datastr.success) {
-                                $('#using_json').jstree().destroy();
-                                $("#selectedPrivilegeId").val("0");
-                                showTree();
-                                alert(datastr.msg);
-                            } else {
-                                alert(datastr.msg);
-                            }
-                        },
-                        error: function (data) {
-                            var datastr = eval('(' + data + ')');
+            layer.confirm(msg, { icon: 3, title: '提示' }, function (index) {
+                //do something
+                var check_val = [];
+                funSelectForCheckbox(check_val);
+                $.ajax({
+                    type: "post",
+                    url: "/admin/User/Delete",
+                    traditional: true,
+                    data: { "ids": check_val },
+                    dataType: "text",
+                    success: function (data) {
+                        var datastr = eval('(' + data + ')');
+                        if (datastr.success) {
                             alert(datastr.msg);
-                            data.instance.refresh();
+                            window.location.href = "/Admin/User/AllUser";
+                        } else {
+                            alert(datastr.msg);
                         }
-                    });
-                }
-            }
+                    },
+                    error: function (data) {
+                        var datastr = eval('(' + data + ')');
+                        alert(datastr.msg);
+                    }
+                });
+                layer.close(index);
+            });
         });
+        //单击全选按钮事件
         $('#selectall').on("click", function () {
             checkAll(this);
         });
@@ -137,37 +134,21 @@
                 $(".i-checks").prop("checked", false);
             }
         }
-
-        //执行回传函数
-        function ExePostBack(objId, objmsg) {
-            if ($(".i-checks input:checked").size() < 1) {
-                layer.msg('对不起，请选中您要操作的记录！', {
-                    time: 3000, //3s后自动关闭
-                    btn: ['确定']
-                });
-                return false;
+        //复选框的单击事件
+        $('input:checkbox').click(function () {
+            if ($(this).attr("checked")) {
+                $(this).removeAttr("checked");
+            } else {
+                $(this).attr("checked", 'checked');
             }
-            var msg = "删除记录后不可恢复，您确定吗？";
-            layer.open({
-                type: 1,
-                content: msg 
-            });
-            
-            if (arguments.length == 2) {
-                msg = objmsg;
+        });
+        //获取复选框选中的值
+        function funSelectForCheckbox(check_val) {
+            var obj = document.getElementsByName("usercheck");
+            for (k in obj) {
+                if (obj[k].checked)
+                    check_val.push(obj[k].value);
             }
-            parent.dialog({
-                title: '提示',
-                content: msg,
-                okValue: '确定',
-                ok: function () {
-                    __doPostBack(objId, '');
-                },
-                cancelValue: '取消',
-                cancel: function () { }
-            }).showModal();
-
-            return false;
         }
     </script>
     <script src="@Url.Content("~/Scripts/bootstrap.min.js?v=3.3.5")" type="text/javascript"></script>

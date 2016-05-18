@@ -18,7 +18,7 @@
         function ajaxSubmit(frm, fn) {
             var dataPara = getFormJson(frm);
             $.ajax({
-                url: frm.action,
+                url: "@Url.Action("Add", "Menu")",
                 type: frm.method,
                 data: dataPara,
                 success: fn
@@ -49,13 +49,13 @@
                 if ($(this).valid()) {
                     ajaxSubmit(this, function (data) {
                         alert(data.msg);
-                        var index = parent.layer.getFrameIndex(window.name);
-                        //                        var instance = parent.$('#using_json').jstree(true);
-                        //                        instance.create_node([instance.get_node($("#dropParent").SelectedItem.value, parent.$("selectedMenuId").val())]);
-                        parent.$('#using_json').jstree().destroy();
-                        parent.$("#selectedMenuId").val("0");
-                        parent.showTree();
-                        parent.layer.close(index);
+                        if (data.success) {
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.$('#using_json').jstree().destroy();
+                            parent.$("#selectedMenuId").val("0");
+                            parent.showTree();
+                            parent.layer.close(index);
+                        }
                     });
                     return false;
                 } else {
@@ -70,7 +70,7 @@
 </head>
 <body>
     <div class="wrapper wrapper-content animated fadeInRight">
-        <form class="form-horizontal m-t" id="commentForm" method="post" action="@Url.Action("Add", "Menu")">
+        <form class="form-horizontal m-t" id="commentForm" method="post">
         <div class="form-group">
             <label class="col-sm-3 control-label">
                 父菜单名称：</label>
@@ -103,8 +103,8 @@
             <div class="col-sm-4 col-xs-offset-5">
                 <button class="btn btn-primary required" type="submit">
                     提交</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button class="btn btn-primary" type="button">
-                    取消</button>
+                @*<button class="btn btn-primary" type="button">
+                    取消</button>*@
             </div>
         </div>
         </form>

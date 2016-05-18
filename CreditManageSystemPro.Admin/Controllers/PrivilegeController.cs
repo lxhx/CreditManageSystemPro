@@ -59,6 +59,11 @@ namespace CreditManageSystemPro.Admin.Controllers
             {
                 return Json(new { success = false, msg = "请选择相应的菜单" }, "text/json");
             }
+            Privilege mPrivilege = db.Privilege.Where(m => m.privilegeName == model.privilegeName).FirstOrDefault();
+            if (mPrivilege != null)
+            {
+                return Json(new { success = false, msg = "该权限已经存在，请更换权限名称" }, "text/json");
+            }
             using (TransactionScope scope = new TransactionScope())
             {
                 try
@@ -124,6 +129,11 @@ namespace CreditManageSystemPro.Admin.Controllers
             if (model.menuId == 0)
             {
                 return Json(new { success = false, msg = "请选择相应的菜单" }, "text/json");
+            }
+            List<Privilege> mPrivilege = db.Privilege.Where(m => m.privilegeName == model.privilegeName).ToList();
+            if (mPrivilege!=null&mPrivilege.Count > 1)
+            {
+                return Json(new { success = false, msg = "该权限已经存在，请更换权限名称" }, "text/json");
             }
             using (TransactionScope scope = new TransactionScope())
             {

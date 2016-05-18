@@ -120,6 +120,11 @@ namespace CreditManageSystemPro.Admin.Controllers
             {
                 return Json(new { success = false, msg = "角色名称不为空" }, "text/json");
             }
+            List<Role> mrRole = db.Role.Where(m => m.roleName == model.roleName).ToList();
+            if (mrRole!=null&mrRole.Count > 1)
+            {
+                return Json(new { success = false, msg = "角色名称已经存在" }, "text/json");
+            }
             using (TransactionScope scope = new TransactionScope())
             {
                 try

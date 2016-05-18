@@ -120,8 +120,6 @@ E:\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\System.Web.Razor.dll
 E:\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\System.Web.WebPages.Deployment.dll
 E:\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\System.Web.WebPages.dll
 E:\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\System.Web.WebPages.Razor.dll
-E:\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\EntityFramework.xml
-E:\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\EntityFramework.SqlServer.xml
 E:\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\Microsoft.Web.Infrastructure.xml
 E:\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\System.Web.Helpers.xml
 E:\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\System.Web.Mvc.xml
@@ -135,6 +133,6 @@ E:\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\zh-Hans\System.Web.Razo
 E:\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\zh-Hans\System.Web.WebPages.resources.dll
 E:\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\zh-Hans\System.Web.WebPages.Deployment.resources.dll
 E:\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\zh-Hans\System.Web.WebPages.Razor.resources.dll
-E:\CreditManageSystemPro\CreditManageSystemPro.Admin\obj\Debug\CreditManageSystemPro.Admin.csprojResolveAssemblyReference.cache
 E:\CreditManageSystemPro\CreditManageSystemPro.Admin\obj\Debug\CreditManageSystemPro.Admin.dll
 E:\CreditManageSystemPro\CreditManageSystemPro.Admin\obj\Debug\CreditManageSystemPro.Admin.pdb
+E:\CreditManageSystemPro\CreditManageSystemPro.Admin\obj\Debug\CreditManageSystemPro.Admin.csprojResolveAssemblyReference.cache

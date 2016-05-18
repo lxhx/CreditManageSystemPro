@@ -19,7 +19,7 @@
         function ajaxSubmit(frm, fn) {
             var dataPara = getFormJson(frm);
             $.ajax({
-                url: frm.action,
+                url: "@Url.Action("Update", "Privilege")",
                 type: frm.method,
                 data: dataPara,
                 success: fn
@@ -84,7 +84,7 @@
 </head>
 <body>
     <div class="wrapper wrapper-content animated fadeInRight">
-        <form class="form-horizontal m-t" id="commentForm" method="post" action="@Url.Action("Update", "Privilege")">
+        <form class="form-horizontal m-t" id="commentForm" method="post">
         <div class="form-group">
             <div class="col-sm-8">
                 @Html.HiddenFor(model => model.privilegeId, new { @class = "form-control", @required = "required", @id = "privilegeId" })

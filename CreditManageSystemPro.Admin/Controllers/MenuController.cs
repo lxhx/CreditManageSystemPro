@@ -69,21 +69,37 @@ namespace CreditManageSystemPro.Admin.Controllers
             {
                 return Json(new { success = false, msg = "菜单Url不为空" }, "text/json");
             }
-            Menu menu = new Menu
+            Menu mMenu = db.Menu.Where(m => m.menuName == model.menuName).FirstOrDefault();
+            if (mMenu != null)
             {
-                menuName = model.menuName,
-                menuUrl = model.menuUrl,
-                menuNote = model.menuNote,
-                parentMenuId = model.menuId
-            };
-            db.Menu.Add(menu);
-            if (db.SaveChanges() > 0)
-            {
-                json.Data = new { success = true, msg = "添加成功！" };
+                return Json(new { success = false, msg = "该菜单已经存在，请更换菜单名称" }, "text/json");
             }
-            else
+            using (TransactionScope scope = new TransactionScope())
             {
-                json.Data = new { success = false, msg = "添加失败！" };
+                try
+                {    
+                    Menu menu = new Menu
+                    {
+                        menuName = model.menuName,
+                        menuUrl = model.menuUrl,
+                        menuNote = model.menuNote,
+                        parentMenuId = model.menuId
+                    };
+                    db.Menu.Add(menu);
+                    if (db.SaveChanges() > 0)
+                    {
+                        json.Data = new { success = true, msg = "添加成功！" };
+                    }
+                    else
+                    {
+                        json.Data = new { success = false, msg = "添加失败！" };
+                    }
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    throw;
+                }
+                scope.Complete();
             }
             return json;
         }
@@ -105,26 +121,42 @@ namespace CreditManageSystemPro.Admin.Controllers
             {
                 return Json(new { success = false, msg = "菜单Url不为空" }, "text/json");
             }
-            Menu menu = db.Menu.FirstOrDefault(m => m.menuId == model.menuId);
-            if (menu!=null)
+            List<Menu> mMenu = db.Menu.Where(m => m.menuName == model.menuName).ToList();
+            if (mMenu!=null&mMenu.Count > 1)
             {
-                menu.menuName = model.menuName;
-                menu.menuUrl = model.menuUrl;
-                menu.menuNote = model.menuNote;
-                menu.parentMenuId = model.parentMenuId;
-                db.Entry(menu).State = EntityState.Modified;
-                if (db.SaveChanges() > 0)
-                {
-                    json.Data = new { success = true, msg = "修改成功！" };
-                }
-                else
-                {
-                    json.Data = new { success = false, msg = "修改失败！" };
-                }
+                return Json(new { success = false, msg = "该菜单已经存在，请更换菜单名称" }, "text/json");
             }
-            else
+            using (TransactionScope scope = new TransactionScope())
             {
-                json.Data = new { success = false, msg = "菜单不存在！" };
+                try
+                {
+                    Menu menu = db.Menu.FirstOrDefault(m => m.menuId == model.menuId);
+                    if (menu!=null)
+                    {
+                        menu.menuName = model.menuName;
+                        menu.menuUrl = model.menuUrl;
+                        menu.menuNote = model.menuNote;
+                        menu.parentMenuId = model.parentMenuId;
+                        db.Entry(menu).State = EntityState.Modified;
+                        if (db.SaveChanges() > 0)
+                        {
+                            json.Data = new { success = true, msg = "修改成功！" };
+                        }
+                        else
+                        {
+                            json.Data = new { success = false, msg = "修改失败！" };
+                        }
+                    }
+                    else
+                    {
+                        json.Data = new { success = false, msg = "菜单不存在！" };
+                    }
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    throw;
+                }
+                scope.Complete();
             }
             return json;
         }

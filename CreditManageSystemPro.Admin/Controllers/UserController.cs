@@ -232,5 +232,55 @@ namespace CreditManageSystemPro.Admin.Controllers
             }
             return json;
         }
+
+        [HttpPost]
+        public ActionResult Delete(string[] ids)
+        {
+            //string[] userids=ids.Split(',');
+            string[] userids=ids;
+            JsonResult json = new JsonResult();
+            using (TransactionScope scope = new TransactionScope())
+            {
+                try
+                {
+                    int tempUserid;
+                    for (int i = 0; i < userids.Length; i++)
+                    {
+                        tempUserid = Convert.ToInt32(userids[i]);
+                        User user = db.User.Find(tempUserid);
+                        if (user != null)
+                        {
+                            db.User.Remove(user);
+                        }
+                        UserProfile userProfile =
+                        db.UserProfile.Where(m => m.userId == tempUserid).FirstOrDefault();
+                        if (userProfile != null)
+                        {
+                            db.UserProfile.Remove(userProfile);
+                        }
+                        UserRole userRole = db.UserRole.Where(m => m.userId == tempUserid).FirstOrDefault();
+                        if (userRole != null)
+                        {
+                            db.UserRole.Remove(userRole);
+                        }
+                    }
+
+                    if (db.SaveChanges() > 0)
+                    {
+                        json.Data = new {success = true, msg = "删除成功！"};
+                    }
+                    else
+                    {
+                        json.Data = new {success = false, msg = "删除失败！"};
+                    }
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    throw;
+                }
+                scope.Complete();
+            }
+            return json;
+        }
     }
 }

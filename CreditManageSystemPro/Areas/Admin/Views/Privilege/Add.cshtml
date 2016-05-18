@@ -51,11 +51,13 @@
                 if ($(this).valid()) {
                     ajaxSubmit(this, function (data) {
                         alert(data.msg);
-                        var index = parent.layer.getFrameIndex(window.name);
-                        parent.$('#using_json').jstree().destroy();
-                        parent.$("#selectedPrivilegeId").val("0");
-                        parent.showTree();
-                        parent.layer.close(index);
+                        if (data.success) {
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.$('#using_json').jstree().destroy();
+                            parent.$("#selectedPrivilegeId").val("0");
+                            parent.showTree();
+                            parent.layer.close(index);
+                        }
                     });
                     return false;
                 } else {
@@ -95,7 +97,7 @@
            <div class="form-group">
                <div class="col-sm-4 col-xs-offset-5">
                    <button class="btn btn-primary required" type="submit">提交</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                   <button class="btn btn-primary" type="button">取消</button>
+                   @*<button class="btn btn-primary" type="button">取消</button>*@
                </div>
            </div>
        </form>
