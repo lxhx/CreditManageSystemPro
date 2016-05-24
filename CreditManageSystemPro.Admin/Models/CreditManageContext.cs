@@ -23,5 +23,9 @@ namespace CreditManageSystemPro.Admin.Models
         public DbSet<RolePrivilege> RolePrivilege { get; set; }
 
         public DbSet<MenuPrivilege> MenuPrivilege { get; set; }
+
+        public DbSet<Customer> Customer { get; set; }
+
+        public DbSet<LoanInfo> LoanInfo { get; set; }
     }
 }

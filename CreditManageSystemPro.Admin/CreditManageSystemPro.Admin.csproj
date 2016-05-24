@@ -101,6 +101,7 @@
   <ItemGroup>
     <Compile Include="AdminAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoanController.cs" />
     <Compile Include="Controllers\MailboxController.cs" />
@@ -111,6 +112,8 @@
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\CreditManageContext.cs" />
+    <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\LoanInfo.cs" />
     <Compile Include="Models\Menu.cs" />
     <Compile Include="Models\MenuPrivilege.cs" />
     <Compile Include="Models\Privilege.cs" />
@@ -138,6 +141,8 @@
   <ItemGroup>
     <Content Include="Content\animate.min.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\demo\demo.css" />
+    <Content Include="Content\demo\webuploader-demo.min.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\login.min.css" />
     <Content Include="Content\patterns\header-profile-skin-1.png" />
@@ -206,11 +211,24 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Images\banner.jpg" />
+    <Content Include="Images\bg.png" />
+    <Content Include="Images\cp_img_sc.png" />
+    <Content Include="Images\cp_img_tj.png" />
+    <Content Include="Images\cp_img_tj_a.png" />
     <Content Include="Images\default_profile_small.jpg" />
+    <Content Include="Images\favicon.ico" />
+    <Content Include="Images\favicon.png" />
+    <Content Include="Images\icons.png" />
+    <Content Include="Images\image.png" />
+    <Content Include="Images\progress.png" />
+    <Content Include="Images\qrcode.jpg" />
+    <Content Include="Images\success.png" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\contabs.min.js" />
     <Content Include="Scripts\content.min.js" />
     <Content Include="Scripts\demo\bootstrap-table-demo.min.js" />
+    <Content Include="Scripts\demo\customer-validate.js" />
     <Content Include="Scripts\demo\echarts-demo.min.js" />
     <Content Include="Scripts\demo\flot-demo.min.js" />
     <Content Include="Scripts\demo\form-advanced-demo.min.js" />
@@ -357,6 +375,7 @@
     <None Include="fonts\glyphicons-halflings-regular.ttf" />
     <None Include="fonts\glyphicons-halflings-regular.woff" />
     <None Include="fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="Images\logo.psd" />
     <None Include="Scripts\plugins\jqgrid\i18n\grid.locale-cn.js0820" />
     <None Include="Scripts\plugins\jqgrid\jquery.jqGrid.min.js0820" />
     <Content Include="Views\User\Index.cshtml" />
@@ -411,6 +430,12 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Views\User\Update.cshtml" />
+    <Content Include="Views\Customer\Index.cshtml" />
+    <Content Include="Views\Customer\AllCustomer.cshtml" />
+    <Content Include="Views\Customer\AddCustomer.cshtml" />
+    <Content Include="Views\Loan\UpdateLoanApply.cshtml" />
+    <Content Include="Views\Loan\LoanValidationList.cshtml" />
+    <Content Include="Views\Loan\LoanValidationDetail.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

@@ -39,8 +39,8 @@ namespace CreditManageSystemPro
 
         protected void Application_Start()
         {
-            //Database.SetInitializer<FileManageContext>(null);
-            Database.SetInitializer(new DropCreateDatabaseIfModelChanges<CreditManageContext>());
+            Database.SetInitializer<CreditManageContext>(null);
+            //Database.SetInitializer(new DropCreateDatabaseIfModelChanges<CreditManageContext>());
 
             AreaRegistration.RegisterAllAreas();
 
