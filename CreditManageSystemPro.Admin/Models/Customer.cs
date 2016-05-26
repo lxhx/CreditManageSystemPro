@@ -37,16 +37,17 @@ namespace CreditManageSystemPro.Admin.Models
         /// <summary>
         /// 出生年月
         /// </summary>
-        public DateTime birthday { get; set; }
+        public DateTime? birthday { get; set; }
 
         /// <summary>
         /// 身份证有效期
         /// </summary>
-        public DateTime expireOfId { get; set; }
+        public DateTime? expireOfId { get; set; }
 
         /// <summary>
         /// 座机号码
         /// </summary>
+        [Required]
         public string telphone { get; set; }
 
         /// <summary>
@@ -73,13 +74,11 @@ namespace CreditManageSystemPro.Admin.Models
         /// <summary>
         /// 户籍所在地
         /// </summary>
-        [Required]
         public string domicilePlace { get; set; }
 
         /// <summary>
         /// 受教育程度
         /// </summary>
-        [Required]
         public string educationLevel { get; set; }
 
         /// <summary>
@@ -95,7 +94,6 @@ namespace CreditManageSystemPro.Admin.Models
         /// <summary>
         /// 开户名
         /// </summary>
-        [Required]
         public string accountName { get; set; }
 
         /// <summary>
@@ -172,12 +170,12 @@ namespace CreditManageSystemPro.Admin.Models
         /// <summary>
         /// 出生年月
         /// </summary>
-        public DateTime birthday { get; set; }
+        public DateTime? birthday { get; set; }
 
         /// <summary>
         /// 身份证有效期
         /// </summary>
-        public DateTime expireOfId { get; set; }
+        public DateTime? expireOfId { get; set; }
 
         /// <summary>
         /// 座机号码
@@ -208,13 +206,11 @@ namespace CreditManageSystemPro.Admin.Models
         /// <summary>
         /// 户籍所在地
         /// </summary>
-        [Required]
         public string domicilePlace { get; set; }
 
         /// <summary>
         /// 受教育程度
         /// </summary>
-        [Required]
         public string educationLevel { get; set; }
 
         /// <summary>
@@ -228,9 +224,8 @@ namespace CreditManageSystemPro.Admin.Models
         public string bankAccount { get; set; }
 
         /// <summary>
-        /// 开户银行
+        /// 开户名
         /// </summary>
-        [Required]
         public string accountName { get; set; }
 
         /// <summary>
@@ -305,16 +300,17 @@ namespace CreditManageSystemPro.Admin.Models
         /// <summary>
         /// 出生年月
         /// </summary>
-        public DateTime birthday { get; set; }
+        public DateTime? birthday { get; set; }
 
         /// <summary>
         /// 身份证有效期
         /// </summary>
-        public DateTime expireOfId { get; set; }
+        public DateTime? expireOfId { get; set; }
 
         /// <summary>
         /// 座机号码
         /// </summary>
+        [Required]
         public string telphone { get; set; }
 
         /// <summary>
@@ -341,13 +337,11 @@ namespace CreditManageSystemPro.Admin.Models
         /// <summary>
         /// 户籍所在地
         /// </summary>
-        [Required]
         public string domicilePlace { get; set; }
 
         /// <summary>
         /// 受教育程度
         /// </summary>
-        [Required]
         public string educationLevel { get; set; }
 
         /// <summary>
@@ -361,9 +355,8 @@ namespace CreditManageSystemPro.Admin.Models
         public string bankAccount { get; set; }
 
         /// <summary>
-        /// 开户银行
+        /// 开户名
         /// </summary>
-        [Required]
         public string accountName { get; set; }
 
         /// <summary>

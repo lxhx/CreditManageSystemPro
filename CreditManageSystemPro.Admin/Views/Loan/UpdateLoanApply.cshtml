@@ -49,185 +49,210 @@
     <title>贷款申请</title>
 </head>
 <body class="gray-bg">
-    <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="">
         <div class="row">
             <div class="col-sm-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         <h5>
-                            贷款申请 <small>填写完整的贷款申请信息</small></h5>
+                            贷款信息</h5>
                         <div class="ibox-tools">
                             <a class="close-link"><i class="fa fa-times"></i></a>
                         </div>
                     </div>
                     <div class="ibox-content">
                         <form class="form-horizontal" role="form" id="customerForm" method="POST">
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                贷款客户</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.Customer.customerName, new { @class = "form-control", name = "customerName", id = "customerName" })
+                            <div class="form-group">
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    贷款客户</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.Customer.customerName, new {@class = "form-control", name = "customerName", id = "customerName"})
+                                </div>
+                                </span>
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    客户经理</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.user.userName, new {@class = "form-control", name = "IdCard", id = "IdCard"})
+                                </div>
+                                </span>
                             </div>
-                            <label class="col-sm-2 control-label">
-                                客户经理</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.user.userName, new { @class = "form-control", name = "IdCard", id = "IdCard" })
+                            <div class="form-group">
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    合同编号</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.contractNo, new {@class = "form-control", @required = "required", name = "domicilePlace", id = "domicilePlace"})
+                                </div>
+                                </span>
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    客户类型</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.customerType, new {@class = "form-control", @required = "required", name = "sex", id = "sex"})
+                                </div>
+                                </span>
                             </div>
-                        </div>
-                        <div class="hr-line-dashed">
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                合同编号</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.contractNo, new { @class = "form-control", @required = "required", name = "domicilePlace", id = "domicilePlace" })
+                            <div class="form-group">
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    贷款金额(元)</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.loanValue, new {@class = "form-control", @required = "required", name = "mobile", id = "mobile"})
+                                </div>
+                                </span>
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    贷款用途</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.loanPurpose, new {@class = "form-control", @required = "required", name = "telphone", id = "telphone"})
+                                </div>
+                                </span>
                             </div>
-                            <label class="col-sm-2 control-label">
-                                客户类型</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.customerType, new { @class = "form-control", @required = "required", name = "sex", id = "sex" })
+                            <div class="form-group">
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    贷款类型</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.loanType, new {@class = "form-control", @required = "required", name = "educationLevel", id = "educationLevel"})
+                                </div>
+                                </span>
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    计算时间方式</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.calTimeType, new {@class = "form-control", @required = "required", name = "occupation", id = "occupation"})
+                                </div>
+                                </span>
                             </div>
-                        </div>
-                        <div class="hr-line-dashed">
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                贷款金额(元)</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.loanValue, new { @class = "form-control", @required = "required", name = "mobile", id = "mobile" })
+                            <div class="form-group">
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    起止时间</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.startTime, new {@class = "form-control", @required = "required", name = "workUnit", id = "workUnit"})
+                                </div>
+                                </span>
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    期数</label>
+                                <div class="col-sm-1">
+                                    @Html.TextBoxFor(model => model.periodNum, new {@class = "form-control", @required = "required", name = "incomeOfYear", id = "incomeOfYear"})
+                                </div>
+                                </span>
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    间隔天数</label>
+                                <div class="col-sm-1">
+                                    @Html.TextBoxFor(model => model.intervalDays, new {@class = "form-control", @required = "required", name = "incomeOfYear", id = "incomeOfYear"})
+                                </div>
+                                </span>
                             </div>
-                            <label class="col-sm-2 control-label">
-                                贷款用途</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.loanPurpose, new { @class = "form-control", @required = "required", name = "telphone", id = "telphone" })
+                            <div class="form-group">
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    月利率(%)</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.monthRate, new {@class = "form-control", @required = "required", name = "healthStatus", id = "healthStatus"})
+                                </div>
+                                </span>
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    计息方法</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.calInterestWay, new {@class = "form-control", @required = "required", name = "bankAccount", id = "bankAccount"})
+                                </div>
+                                </span>
                             </div>
-                        </div>
-                        <div class="hr-line-dashed">
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                贷款类型</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.loanType, new { @class = "form-control", @required = "required", name = "educationLevel", id = "educationLevel" })
+                            <div class="form-group">
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    逾期罚息(%)</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.penaltyRate, new {@class = "form-control", @required = "required", name = "accountName", id = "accountName"})
+                                </div>
+                                </span>
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    支付方式</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.payWay, new {@class = "form-control", @required = "required", name = "badRecord", id = "badRecord"})
+                                </div>
+                                </span>
                             </div>
-                            <label class="col-sm-2 control-label">
-                                计算时间方式</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.calTimeType, new { @class = "form-control", @required = "required", name = "occupation", id = "occupation" })
+                            <div class="form-group">
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    提前还款</label>
+                                <div class="col-sm-2 input"><div style="line-height: 30px"><span style="float: left"><input type="checkbox" />提前还款，收取合同金额</span>
+                                    @Html.TextBoxFor(model => model.breachScale, new {style = "width:4%;float:left", @class = "form-control", @required = "required", name = "debtValue", id = "debtValue"})<span style="float:left">作违约金</span>
+                                    </div>
+                                </div>
+                                </span>
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    协议利息</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.agreementInterest, new {@class = "form-control", @required = "required", name = "houseRight", id = "houseRight"})
+                                </div>
+                                </span>
                             </div>
-                        </div>
-                        <div class="hr-line-dashed">
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                起止时间</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.startTime, new { @class = "form-control", @required = "required", name = "workUnit", id = "workUnit" })
+                            <div class="form-group">
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    预收利息(元)</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.advanceInterest, new {@class = "form-control", @required = "required", name = "houseEvaluation", id = "houseEvaluation"})
+                                </div>
+                                </span>
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    手续费(元)</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.poundage, new {@class = "form-control", @required = "required", name = "spouseName", id = "spouseName"})
+                                </div>
+                                </span>
                             </div>
-                            <label class="col-sm-1 control-label">
-                                期数</label>
-                            <div class="col-sm-2">
-                                @Html.TextBoxFor(model => model.periodNum, new {@class = "form-control", @required = "required", name = "incomeOfYear", id = "incomeOfYear"})
+                            <div class="form-group">
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    担保人</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.guarantee, new {@class = "form-control", @required = "required", name = "spouseIdCard", id = "spouseIdCard"})
+                                </div>
+                                </span>
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    担保方式</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.guaranteeWay, new {@class = "form-control", @required = "required", name = "spouseIdCard", id = "spouseIdCard"})
+                                </div>
+                                </span>
                             </div>
-                            <label class="col-sm-1 control-label">
-                                间隔天数</label>
-                            <div class="col-sm-2">
-                                @Html.TextBoxFor(model => model.intervalDays, new { @class = "form-control", @required = "required", name = "incomeOfYear", id = "incomeOfYear" })
+                            <div class="form-group">
+                                <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    备注</label>
+                                <div class="col-sm-2">
+                                    @Html.TextAreaFor(model => model.remark, new {@class = "form-control", name = "remarks", id = "remarks"})
+                                </div>
+                                </span>
                             </div>
-                        </div>
-                        <div class="hr-line-dashed">
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                月利率(%)</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.monthRate, new { @class = "form-control", @required = "required", name = "healthStatus", id = "healthStatus" })
-                            </div>
-                            <label class="col-sm-2 control-label">
-                                计息方法</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.calInterestWay, new { @class = "form-control", @required = "required", name = "bankAccount", id = "bankAccount" })
-                            </div>
-                        </div>
-                        <div class="hr-line-dashed">
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                逾期罚息</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.penaltyRate, new { @class = "form-control", @required = "required", name = "accountName", id = "accountName" })
-                            </div>
-                            <label class="col-sm-2 control-label">
-                                支付方式</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.payWay, new { @class = "form-control", @required = "required", name = "badRecord", id = "badRecord" })
-                            </div>
-                        </div>
-                        <div class="hr-line-dashed">
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                提前还款</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.breachScale, new { @class = "form-control", @required = "required", name = "debtValue", id = "debtValue" })
-                            </div>
-                            <label class="col-sm-2 control-label">
-                                协议利息</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.agreementInterest, new { @class = "form-control", @required = "required", name = "houseRight", id = "houseRight" })
-                            </div>
-                        </div>
-                        <div class="hr-line-dashed">
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                预收利息(元)</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.advanceInterest, new { @class = "form-control", @required = "required", name = "houseEvaluation", id = "houseEvaluation" })
-                            </div>
-                            <label class="col-sm-2 control-label">
-                                手续费(元)</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.poundage, new { @class = "form-control", @required = "required", name = "spouseName", id = "spouseName" })
-                            </div>
-                        </div>
-                        <div class="hr-line-dashed">
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                担保人</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.guarantee, new {@class = "form-control", @required = "required", name = "spouseIdCard", id = "spouseIdCard"})
-                            </div>
-                            <label class="col-sm-2 control-label">
-                                担保方式</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.guaranteeWay, new { @class = "form-control", @required = "required", name = "spouseIdCard", id = "spouseIdCard" })
-                            </div>
-                        </div>
-                        <div class="hr-line-dashed">
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                备注</label>
-                            <div class="col-sm-8">
-                                @Html.TextAreaFor(model => model.remark, new { @class = "form-control", name = "remarks", id = "remarks" })
-                            </div>
-                        </div>
                         <div class="form-group">
                             <div id="thelist" class="uploader-list">
                             </div>
                         </div>
-                        <div class="hr-line-dashed">
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-4 col-sm-offset-2">
-                                <button class="btn btn-primary" type="submit">
-                                    保存内容</button>
-                                <button class="btn btn-white" type="button">
-                                    取消</button>
+                            <div class="form-group">
+                                <span class="form-groups">
+                                <div class="col-sm-3 col-sm-offset-2">
+                                    <button class="btn btn-primary" type="submit">
+                                        保存内容</button>
+                                    <button class="btn btn-white" type="button">
+                                        取消</button>
+                                </div>
+                                </span>
                             </div>
-                        </div>
                         </form>
                     </div>
                 </div>

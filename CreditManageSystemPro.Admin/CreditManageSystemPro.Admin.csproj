@@ -232,6 +232,7 @@
     <Content Include="Scripts\demo\echarts-demo.min.js" />
     <Content Include="Scripts\demo\flot-demo.min.js" />
     <Content Include="Scripts\demo\form-advanced-demo.min.js" />
+    <Content Include="Scripts\demo\form-validate-demo.js" />
     <Content Include="Scripts\demo\form-validate-demo.min.js" />
     <Content Include="Scripts\demo\layer-demo.min.js" />
     <Content Include="Scripts\demo\morris-demo.min.js" />

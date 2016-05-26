@@ -176,3 +176,4 @@ G:\项目\CreditManageSystemPro\CreditManageSystemPro.Admin\obj\Debug\CreditMana
 G:\项目\CreditManageSystemPro\CreditManageSystemPro.Admin\obj\Debug\CreditManageSystemPro.Admin.pdb
 E:\项目\CreditManageSystemPro\CreditManageSystemPro.Admin\obj\Debug\CreditManageSystemPro.Admin.csprojResolveAssemblyReference.cache
 G:\项目\CreditManageSystemPro\CreditManageSystemPro.Admin\obj\Debug\CreditManageSystemPro.Admin.csprojResolveAssemblyReference.cache
+F:\CreditManageSystemPro\CreditManageSystemPro.Admin\obj\Debug\CreditManageSystemPro.Admin.csprojResolveAssemblyReference.cache

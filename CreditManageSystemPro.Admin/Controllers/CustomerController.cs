@@ -33,11 +33,6 @@ namespace CreditManageSystemPro.Admin.Controllers
             return View(customerList);
         }
 
-        public ActionResult AddCustomer()
-        {
-            return View();
-        }
-
         [HttpPost]
         public ActionResult Details(int id = 0)
         {
@@ -47,6 +42,27 @@ namespace CreditManageSystemPro.Admin.Controllers
                 return HttpNotFound();
             }
             return Json(model, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AddCustomer()
+        {
+            List<SelectListItem> select = new List<SelectListItem>();
+            select.Add(new SelectListItem { Text = "男", Value = "0" });
+            select.Add(new SelectListItem { Text = "女", Value = "1" });
+            ViewData["sex"] = new SelectList(select, "Value", "Text");
+
+            List<SelectListItem> educationLevel = new List<SelectListItem>();
+            educationLevel.Add(new SelectListItem { Text = "小学", Value = "0" });
+            educationLevel.Add(new SelectListItem { Text = "初中", Value = "1" });
+            educationLevel.Add(new SelectListItem { Text = "高中", Value = "2" });
+            educationLevel.Add(new SelectListItem { Text = "技校", Value = "3" });
+            educationLevel.Add(new SelectListItem { Text = "中专", Value = "4" });
+            educationLevel.Add(new SelectListItem { Text = "大专", Value = "5" });
+            educationLevel.Add(new SelectListItem { Text = "本科", Value = "6" });
+            educationLevel.Add(new SelectListItem { Text = "硕士", Value = "7" });
+            educationLevel.Add(new SelectListItem { Text = "博士", Value = "8" });
+            ViewData["educationLevel"] = new SelectList(educationLevel, "Value", "Text");
+            return View();
         }
 
         [HttpPost]
@@ -61,9 +77,9 @@ namespace CreditManageSystemPro.Admin.Controllers
             {
                 return Json(new { success = false, msg = "身份证号码不能为空" }, "text/json");
             } 
-            if (string.IsNullOrEmpty(model.domicilePlace))
+            if (string.IsNullOrEmpty(model.telphone))
             {
-                return Json(new { success = false, msg = "户籍所在地不能为空" }, "text/json");
+                return Json(new { success = false, msg = "座机电话不能为空" }, "text/json");
             }
             if (string.IsNullOrEmpty(model.mobile))
             {

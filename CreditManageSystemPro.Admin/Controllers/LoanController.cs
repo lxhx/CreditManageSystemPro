@@ -63,6 +63,13 @@ namespace CreditManageSystemPro.Admin.Controllers
                 model.guaranteeWay = loanApplyInfo.guaranteeWay;
                 model.remark = loanApplyInfo.remark;
             }
+            else
+            {
+                Customer customer = db.Customer.Find(customerId);
+                model.customerId = customerId;
+                model.contractNo = Utility.Utils.GetRamCode();
+                model.Customer = customer;
+            }
             return View(model);
         }
 
