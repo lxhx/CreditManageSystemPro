@@ -32,6 +32,10 @@ namespace CreditManageSystemPro
 
         }
 
+
+
+
+
         protected void Application_Start()
         {
             Database.SetInitializer<CreditManageContext>(null);
