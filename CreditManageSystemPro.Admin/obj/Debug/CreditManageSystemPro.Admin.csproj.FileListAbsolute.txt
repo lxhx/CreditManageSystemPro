@@ -13,7 +13,6 @@ F:\software\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\System.Web.Web
 F:\software\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\EntityFramework.xml
 F:\software\CreditManageSystemPro\CreditManageSystemPro.Admin\obj\Debug\CreditManageSystemPro.Admin.dll
 F:\software\CreditManageSystemPro\CreditManageSystemPro.Admin\obj\Debug\CreditManageSystemPro.Admin.pdb
-F:\software\CreditManageSystemPro\CreditManageSystemPro.Admin\obj\Debug\CreditManageSystemPro.Admin.csprojResolveAssemblyReference.cache
 D:\龙行科技\CreditManageSystemPro\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\CreditManageSystemPro.Admin.dll
 D:\龙行科技\CreditManageSystemPro\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\CreditManageSystemPro.Admin.pdb
 D:\龙行科技\CreditManageSystemPro\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\EntityFramework.dll
@@ -177,3 +176,6 @@ G:\项目\CreditManageSystemPro\CreditManageSystemPro.Admin\obj\Debug\CreditMana
 E:\项目\CreditManageSystemPro\CreditManageSystemPro.Admin\obj\Debug\CreditManageSystemPro.Admin.csprojResolveAssemblyReference.cache
 G:\项目\CreditManageSystemPro\CreditManageSystemPro.Admin\obj\Debug\CreditManageSystemPro.Admin.csprojResolveAssemblyReference.cache
 F:\CreditManageSystemPro\CreditManageSystemPro.Admin\obj\Debug\CreditManageSystemPro.Admin.csprojResolveAssemblyReference.cache
+F:\software\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\EntityFramework.SqlServer.dll
+F:\software\CreditManageSystemPro\CreditManageSystemPro.Admin\bin\EntityFramework.SqlServer.xml
+F:\software\CreditManageSystemPro\CreditManageSystemPro.Admin\obj\Debug\ResolveAssemblyReference.cache
