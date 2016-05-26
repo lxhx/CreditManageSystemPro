@@ -31,11 +31,6 @@ namespace CreditManageSystemPro
             ).DataTokens.Add("Area","Admin");
 
         }
-
-
-
-
-
         protected void Application_Start()
         {
             Database.SetInitializer<CreditManageContext>(null);
