@@ -29,10 +29,6 @@ namespace CreditManageSystemPro
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional }, // Parameter defaults
                 namespaces:new string[] { "CreditManageSystemPro.Admin.Controllers" }
             ).DataTokens.Add("Area","Admin");
-
-
-
-
         }
         protected void Application_Start()
         {
