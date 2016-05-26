@@ -30,6 +30,9 @@ namespace CreditManageSystemPro
                 namespaces:new string[] { "CreditManageSystemPro.Admin.Controllers" }
             ).DataTokens.Add("Area","Admin");
 
+
+
+
         }
         protected void Application_Start()
         {
