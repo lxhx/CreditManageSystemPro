@@ -44,5 +44,10 @@ namespace CreditManageSystemPro
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
         }
+
+
+
+
+
     }
 }
