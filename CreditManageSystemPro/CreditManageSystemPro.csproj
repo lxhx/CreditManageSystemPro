@@ -349,6 +349,7 @@
     <None Include="Content\plugins\footable\fonts\footable.ttf" />
     <None Include="Content\plugins\footable\fonts\footable.woff" />
     <None Include="Content\plugins\jqgrid\ui.jqgrid.css0820" />
+    <None Include="CreditManageSystemPro.ppk" />
     <None Include="fonts\fontawesome-webfont.eot" />
     <None Include="fonts\fontawesome-webfont.ttf" />
     <None Include="fonts\fontawesome-webfont.woff" />

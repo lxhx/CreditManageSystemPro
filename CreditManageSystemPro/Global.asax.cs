@@ -27,8 +27,8 @@ namespace CreditManageSystemPro
                 "Default", // Route name
                 "{controller}/{action}/{id}", // URL with parameters
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional }, // Parameter defaults
-                new string[] { "CreditManageSystemPro.Controllers" }
-            );
+                namespaces:new string[] { "CreditManageSystemPro.Admin.Controllers" }
+            ).DataTokens.Add("Area","Admin");
 
         }
 
