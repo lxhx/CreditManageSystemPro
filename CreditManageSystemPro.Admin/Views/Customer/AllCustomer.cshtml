@@ -92,11 +92,18 @@
                                                             @customer.bankAccount
                                                         </td>
                                                         <td>
-                                                            @Html.ActionLink("查看贷款资料", "UpdateLoanApply", "Loan", new { customerId = @customer.customerId }, new { @class = "client-link label label-primary",target="_self" })
+                                                            @if (Html.Action("WhetherFill", "Customer", new {customerId = customer.customerId}).ToString().Equals("true"))
+                                                            {
+                                                                @Html.ActionLink("查看贷款资料", "UpdateLoanApply", "Loan", new { customerId = @customer.customerId }, new { @class = "client-link label label-primary", target = "_self" })
+                                                            }
+                                                            else
+                                                            {
+                                                                @Html.ActionLink("新增贷款资料", "LoanApply", "Loan", new { customerId = @customer.customerId }, new { @class = "client-link label label-primary", target = "_self" })
+                                                            }
                                                         </td>
                                                         <td class="client-status">
                                                             <span class="label label-primary">已验证</span>
-                                                        </td>
+                                                        </td> 
                                                     </tr>
                                                 }
                                                 </tbody>

@@ -12,11 +12,39 @@
     <link href="@Url.Content("~/Content/animate.min.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/Content/style.min.css?v=4.0.0")" rel="stylesheet" type="text/css"/>
     <link href="@Url.Content("~/Content/plugins/datapicker/datepicker3.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/plugins/dataTables/dataTables.bootstrap.css")" rel="stylesheet">
     <link href="@Url.Content("~/Content/plugins/webuploader/webuploader.css")" rel="stylesheet" type="text/css"/>
     <link href="@Url.Content("~/Scripts/plugins/layer/skin/layer.css")" rel="stylesheet" />
     <script src="@Url.Content("~/Scripts/jquery.min.js?v=2.1.4")" type="text/javascript"></script>
     @*<script src="@Url.Content("~/Scripts/uploader.js")" type="text/javascript"></script>*@
     <script type="text/javascript">
+        (function ($) {
+            $.fn.watch = function (callback) {
+                return this.each(function () {
+                    //缓存以前的值  
+                    $.data(this, 'originVal', $(this).val());
+
+                    //event  
+                    $(this).on('keyup paste', function () {
+                        var originVal = $(this, 'originVal');
+                        var currentVal = $(this).val();
+
+                        if (originVal !== currentVal) {
+                            $.data(this, 'originVal', $(this).val());
+                            callback(currentVal);
+                        }
+                    });
+                });
+            }
+        })(jQuery);
+
+        //时间间隔计算(间隔天数)
+        function GetDateDiff(startDate, endDate) {
+            var startTime = new Date(Date.parse(startDate.replace(/-/g, "/"))).getTime();
+            var endTime = new Date(Date.parse(endDate.replace(/-/g, "/"))).getTime();
+            var dates = Math.abs((startTime - endTime)) / (1000 * 60 * 60 * 24);
+            return dates;
+        }
         //将form转为AJAX提交
         function ajaxSubmit(frm, fn) {
             var dataPara = getFormJson(frm);
@@ -45,17 +73,148 @@
             });
             return o;
         }
+        Date.prototype.format = function (format) {
+            var args = {
+                "M+": this.getMonth() + 1,
+                "d+": this.getDate(),
+                "h+": this.getHours(),
+                "m+": this.getMinutes(),
+                "s+": this.getSeconds(),
+                "q+": Math.floor((this.getMonth() + 3) / 3),  //quarter
+                "S": this.getMilliseconds()
+            };
+            if (/(y+)/.test(format))
+                format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var i in args) {
+                var n = args[i];
+                if (new RegExp("(" + i + ")").test(format))
+                    format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? n : ("00" + n).substr(("" + n).length));
+            }
+            return format;
+        };
+        //分割时间段
+        function division(t, intervalDays) {
+            var tt = new Date(Date.parse(t.replace(/-/g, "/")));
+            var iToDay = tt.getDate();
+            var iToMon = tt.getMonth();
+            var iToYear = tt.getFullYear();
+            var newDay = new Date(iToYear, iToMon, (iToDay + parseInt(intervalDays)));
+            return newDay.format("yyyy-MM-dd");
+        }
+
+        //计算还款计划
+        function hkjh() {
+            $("#tbodytr").html("");
+            //贷款总金额
+            var loanValue = $("#loanValue").val();
+            //期数
+            var periodNum = $("#periodNum").val();
+            //合计天数
+            var totalDays = $("#totalDays").html();
+            //月利率
+            var monthRate = $("#monthRate").val();
+            //间隔天数
+            var intervalDays=$("#intervalDays").val();
+            //是否填写贷款总金额
+            if (loanValue > 0) {
+                //根据期数计算的平均本金
+                var averageM = (parseFloat(loanValue) / parseFloat(periodNum)).toFixed(2);
+                //平均利息
+                var dayRate = (monthRate * 0.001 / 30);
+                var averageI = ((dayRate * parseInt(totalDays) * loanValue) / periodNum).toFixed(2);
+                var subtotal = parseFloat(averageM) + parseFloat(averageI);
+                var t = $("#startTime").val();
+                for (var i = 1; i <= periodNum; i++) {
+                    var trhtml = "<tr class='gradeX'><td>" + i + "</td><td>" + averageM + "</td><td>" + averageI + "</td><td class='center'>" + division(t, intervalDays) + "</td><td class='center'>" + subtotal + "</td></tr>";
+                    if (i != periodNum) {
+                        intervalDays = (i + 1) * parseInt(intervalDays);
+                    } else {
+                        intervalDays = totalDays;
+                    }
+                    $("#tbodytr").append(trhtml);
+                }
+            } else {
+                $("#loanValue").focus();
+                $("#monthRate").val("0");
+                alert("请输入贷款金额");
+            }
+        }
+        $(function () {
+            $("#startTime").val(new Date().format("yyyy-MM-dd"));
+            var t = new Date();
+            var iToDay = t.getDate();
+            var iToMon = t.getMonth();
+            var iToYear = t.getFullYear();
+            var newDay = new Date(iToYear, iToMon, (iToDay + 30));
+            $("#endTime").val(newDay.format("yyyy-MM-dd"));
+            $("#totalDays").html(GetDateDiff($("#startTime").val(), $("#endTime").val()));
+            $("#intervalDays").val(Math.floor(parseInt($("#totalDays").html()) / parseInt($("#periodNum").val())));
+            $("#startTime").bind("change", function () {
+                var startTime = $("#startTime").val();
+                var endTime = $("#endTime").val();
+                var totalDays = GetDateDiff(startTime, endTime);
+                $("#totalDays").html(totalDays);
+            });
+            $("#endTime").bind("change", function () {
+                var startTime = $("#startTime").val();
+                var endTime = $("#endTime").val();
+                var totalDays = GetDateDiff(startTime, endTime);
+                $("#totalDays").html(totalDays);
+            });
+
+            $("#monthRate").watch(function (value) {
+                hkjh();
+            });
+        });
+    </script>
+    <script type="text/javascript" language="javascript">
+        function addOne() {
+            var showControl = document.getElementById("periodNum");
+            if (parseInt(showControl.value) >= 1) {
+                showControl.value = parseInt(showControl.value) + 1;
+                $("#intervalDays").val(Math.floor(parseInt($("#totalDays").html()) / parseInt($("#periodNum").val())));
+                hkjh();
+            } else {
+                showControl.value = 1;
+            }
+        }
+        function removeOne() {
+            var showControl = document.getElementById("periodNum");
+            if (parseInt(showControl.value) > 1) {
+                showControl.value = parseInt(showControl.value) - 1;
+                $("#intervalDays").val(Math.floor(parseInt($("#totalDays").html()) / parseInt($("#periodNum").val())));
+                hkjh();
+            } else {
+                showControl.value = 1;
+            }
+        }
+        function addTwo() {
+            var showControl = document.getElementById("intervalDays");
+            if (parseInt(showControl.value) >= 0) {
+                showControl.value = parseInt(showControl.value) + 1;
+            } else {
+                showControl.value = 0;
+            }
+        }
+        function removeTwo() {
+            var showControl = document.getElementById("intervalDays");
+            if (parseInt(showControl.value) > 0) {
+                showControl.value = parseInt(showControl.value) - 1;
+            } else {
+                showControl.value = 0;
+            }
+        }
     </script>
     <title>贷款申请</title>
 </head>
 <body class="gray-bg">
-    <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="">
         <div class="row">
             <div class="col-sm-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         <h5>
-                            贷款申请 <small>填写完整的贷款申请信息</small></h5>
+                            贷款信息</h5>
                         <div class="ibox-tools">
                             <a class="close-link"><i class="fa fa-times"></i></a>
                         </div>
@@ -63,170 +222,262 @@
                     <div class="ibox-content">
                         <form class="form-horizontal" role="form" id="customerForm" method="POST">
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                贷款客户</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.Customer.customerName, new { @class = "form-control", name = "customerName", id = "customerName" })
-                            </div>
-                            <label class="col-sm-2 control-label">
-                                客户经理</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.user.userName, new { @class = "form-control", name = "userName", id = "userName" })
-                            </div>
-                        </div>
-                        <div class="hr-line-dashed">
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                合同编号</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.contractNo, new { @class = "form-control", @required = "required", name = "contractNo", id = "contractNo" })
-                            </div>
-                            <label class="col-sm-2 control-label">
-                                客户类型</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.customerType, new { @class = "form-control", @required = "required", name = "customerType", id = "customerType" })
-                            </div>
-                        </div>
-                        <div class="hr-line-dashed">
+                            <span class="form-groups">
+                                <label class="col-sm-1 control-label" style="color: red">
+                                    贷款客户:</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.Customer.customerName, new { @class = "form-control", name = "customerName", id = "customerName" })
+                                </div>
+                            </span><span class="form-groups">
+                                <label class="col-sm-1 control-label" style="color: red">
+                                    客户经理</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.user.userName, new { @class = "form-control", name = "userName", id = "userName" })
+                                </div>
+                            </span>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                贷款金额(元)</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.loanValue, new { @class = "form-control", @required = "required", name = "loanValue", id = "loanValue" })
-                            </div>
-                            <label class="col-sm-2 control-label">
-                                贷款用途</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.loanPurpose, new { @class = "form-control", @required = "required", name = "loanPurpose", id = "loanPurpose" })
-                            </div>
-                        </div>
-                        <div class="hr-line-dashed">
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                贷款类型</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.loanType, new { @class = "form-control", @required = "required", name = "loanType", id = "loanType" })
-                            </div>
-                            <label class="col-sm-2 control-label">
-                                计算时间方式</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.calTimeType, new { @class = "form-control", @required = "required", name = "calTimeType", id = "calTimeType" })
-                            </div>
-                        </div>
-                        <div class="hr-line-dashed">
+                            <span class="form-groups">
+                                <label class="col-sm-1 control-label" style="color: red">
+                                    合同编号</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.contractNo, new { @class = "form-control", @required = "required", name = "contractNo", id = "contractNo" })
+                                </div>
+                            </span><span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    客户类型</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.customerType, new { @class = "form-control", name = "customerType", id = "customerType" })
+                                </div>
+                            </span>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                起止时间</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.startTime, new { @class = "form-control", @required = "required", name = "startTime", id = "startTime" })
-                            </div>
-                            <label class="col-sm-1 control-label">
-                                期数</label>
-                            <div class="col-sm-2">
-                                @Html.TextBoxFor(model => model.periodNum, new { @class = "form-control", @required = "required", name = "periodNum", id = "periodNum" })
-                            </div>
-                            <label class="col-sm-1 control-label">
-                                间隔天数</label>
-                            <div class="col-sm-2">
-                                @Html.TextBoxFor(model => model.intervalDays, new { @class = "form-control", @required = "required", name = "intervalDays", id = "intervalDays" })
-                            </div>
-                        </div>
-                        <div class="hr-line-dashed">
+                            <span class="form-groups">
+                                <label class="col-sm-1 control-label" style="color: red">
+                                    贷款金额(元)</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.loanValue, new { @class = "form-control", @required = "required", name = "loanValue", id = "loanValue" })
+                                </div>
+                            </span><span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    贷款用途</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.loanPurpose, new { @class = "form-control", name = "loanPurpose", id = "loanPurpose" })
+                                </div>
+                            </span>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                月利率(%)</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.monthRate, new { @class = "form-control", @required = "required", name = "monthRate", id = "monthRate" })
-                            </div>
-                            <label class="col-sm-2 control-label">
-                                计息方法</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.calInterestWay, new { @class = "form-control", @required = "required", name = "calInterestWay", id = "calInterestWay" })
-                            </div>
-                        </div>
-                        <div class="hr-line-dashed">
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                逾期罚息</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.penaltyRate, new { @class = "form-control", @required = "required", name = "penaltyRate", id = "penaltyRate" })
-                            </div>
-                            <label class="col-sm-2 control-label">
-                                支付方式</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.payWay, new { @class = "form-control", @required = "required", name = "payWay", id = "payWay" })
-                            </div>
-                        </div>
-                        <div class="hr-line-dashed">
+                            <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    贷款类型</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.loanType, new { @class = "form-control", name = "loanType", id = "loanType" })
+                                </div>
+                            </span><span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    计算时间方式</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.calTimeType, new { @class = "form-control", name = "calTimeType", id = "calTimeType" })
+                                </div>
+                            </span>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                提前还款</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.breachScale, new { @class = "form-control", @required = "required", name = "breachScale", id = "breachScale" })
-                            </div>
-                            <label class="col-sm-2 control-label">
-                                协议利息</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.agreementInterest, new { @class = "form-control", @required = "required", name = "agreementInterest", id = "agreementInterest" })
-                            </div>
-                        </div>
-                        <div class="hr-line-dashed">
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                预收利息(元)</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.advanceInterest, new { @class = "form-control", @required = "required", name = "advanceInterest", id = "advanceInterest" })
-                            </div>
-                            <label class="col-sm-2 control-label">
-                                手续费(元)</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.poundage, new { @class = "form-control", @required = "required", name = "poundage", id = "poundage" })
-                            </div>
-                        </div>
-                        <div class="hr-line-dashed">
+                            <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    起止时间:</label>
+                                <div class="col-sm-5">
+                                    <div class="input-group" style="float: left; width: 100px;">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        @Html.TextBoxFor(model => model.startTime, new { @class = "input-sm", @required = "required", name = "startTime", id = "startTime", oninput = "onInput(event)", onpropertychange = "onPropertyChange(event)", style = "float:left;" })
+                                    </div>
+                                    <span class="input-group-addon" style="float: left; width: 40px; height: 28px; margin: 0px 20px;">
+                                        到</span>
+                                    <div class="input-group" style="float: left; width: 100px;">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        @Html.TextBoxFor(model => model.endTime, new { @class = "input-sm", @required = "required", name = "endTime", id = "endTime", style = "float:left;" })
+                                    </div>
+                                    <label class="control-label" style="margin-left: 25px; float: left;">
+                                        合计:<span id="totalDays"></span>天</label>
+                                </div>
+                            </span>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                担保人</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.guarantee, new { @class = "form-control", @required = "required", name = "guarantee", id = "guarantee" })
-                            </div>
-                            <label class="col-sm-2 control-label">
-                                担保方式</label>
-                            <div class="col-sm-4">
-                                @Html.TextBoxFor(model => model.guaranteeWay, new { @class = "form-control", @required = "required", name = "guaranteeWay", id = "guaranteeWay" })
-                            </div>
-                        </div>
-                        <div class="hr-line-dashed">
+                            <span class="form-groups">
+                                <label class="col-sm-1 control-label" style="color: red">
+                                    期数</label>
+                                <div class="col-sm-2">
+                                    <table style="background-color: #ebead8;">
+                                        <tr>
+                                            <td rowspan="2" style="width: 85%; height: 34px;">
+                                                @Html.TextBoxFor(model => model.periodNum, new { @class = "form-control", @required = "required", name = "periodNum", id = "periodNum", style = "width:51px;text-align: left; vertical-align: middle; color: #7d2974; font-size: medium" })
+                                            </td>
+                                            <td>
+                                                <input type="button" value="▲" onclick=" addOne() " style="width: 85%; height: 17px;" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="button" onclick=" removeOne() " value="▼" style="width: 85%; height: 17px;" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </span><span class="form-groups">
+                                <label class="col-sm-1 control-label" style="color: red;">
+                                    间隔天数</label>
+                                <div class="col-sm-2">
+                                    <table style="background-color: #ebead8;">
+                                        <tr>
+                                            <td rowspan="2" style="width: 85%; height: 34px;">
+                                                @Html.TextBoxFor(model => model.intervalDays, new { @class = "form-control", @required = "required", name = "intervalDays", id = "intervalDays", style = "text-align: left; vertical-align: middle; color: #7d2974; font-size: medium" })
+                                            </td>
+                                            <td>
+                                                <input type="button" value="▲" onclick=" addTwo() " style="height: 17px;" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="button" onclick=" removeTwo() " value="▼" style="height: 17px;" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </span>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">
-                                备注</label>
-                            <div class="col-sm-8">
-                                @Html.TextAreaFor(model => model.remark, new { @class = "form-control", name = "remark", id = "remark" })
-                            </div>
+                            <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    月利率(‰)</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.monthRate, new { @class = "form-control", @required = "required", name = "monthRate", id = "monthRate" })
+                                </div>
+                            </span><span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    计息方法</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.calInterestWay, new { @class = "form-control", @required = "required", name = "calInterestWay", id = "calInterestWay" })
+                                </div>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-groups">
+                                <label class="col-sm-1 control-label" style="color: red">
+                                    逾期罚息(%)</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.penaltyRate, new { @class = "form-control", name = "penaltyRate", id = "penaltyRate" })
+                                </div>
+                            </span><span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    支付方式</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.payWay, new { @class = "form-control", name = "payWay", id = "payWay" })
+                                </div>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    提前还款</label>
+                                <div class="col-sm-2 input">
+                                    <div style="line-height: 30px">
+                                        <span style="float: left">
+                                            <input type="checkbox" />提前还款，收取合同金额</span>
+                                        @Html.TextBoxFor(model => model.breachScale, new { style = "width:4%;float:left", @class = "form-control", name = "breachScale", id = "breachScale" })<span
+                                            style="float: left">%作违约金</span>
+                                    </div>
+                                </div>
+                            </span><span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    协议利息</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.agreementInterest, new { @class = "form-control", name = "agreementInterest", id = "agreementInterest" })
+                                </div>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    预收利息(元)</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.advanceInterest, new { @class = "form-control", name = "advanceInterest", id = "advanceInterest" })
+                                </div>
+                            </span><span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    手续费(元)</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.poundage, new { @class = "form-control", name = "poundage", id = "poundage" })
+                                </div>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    担保人</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.guarantee, new { @class = "form-control", name = "guarantee", id = "guarantee" })
+                                </div>
+                            </span><span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    担保方式</label>
+                                <div class="col-sm-2">
+                                    @Html.TextBoxFor(model => model.guaranteeWay, new { @class = "form-control", name = "guaranteeWay", id = "guaranteeWay" })
+                                </div>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-groups">
+                                <label class="col-sm-1 control-label" style="color: red">
+                                    还款计划:</label>
+                                <div class="col-sm-5">
+                                    <table class="table table-striped table-bordered table-hover " id="editable">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    期数
+                                                </th>
+                                                <th>
+                                                    本金(元)
+                                                </th>
+                                                <th>
+                                                    利息(元)
+                                                </th>
+                                                <th>
+                                                    日期
+                                                </th>
+                                                <th>
+                                                    小计(元)
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbodytr">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-groups">
+                                <label class="col-sm-1 control-label">
+                                    备注</label>
+                                <div class="col-sm-2">
+                                    @Html.TextAreaFor(model => model.remark, new { @class = "form-control", name = "remarks", id = "remarks" })
+                                </div>
+                            </span>
                         </div>
                         <div class="form-group">
                             <div id="thelist" class="uploader-list">
                             </div>
                         </div>
-                        <div class="hr-line-dashed">
-                        </div>
                         <div class="form-group">
-                            <div class="col-sm-4 col-sm-offset-2">
-                                <button class="btn btn-primary" type="submit">
-                                    保存内容</button>
-                                <button class="btn btn-white" type="button">
-                                    取消</button>
-                            </div>
+                            <span class="form-groups">
+                                <div class="col-sm-3 col-sm-offset-2">
+                                    <button class="btn btn-primary" type="submit">
+                                        保存内容</button>
+                                    <button class="btn btn-white" type="button">
+                                        取消</button>
+                                </div>
+                            </span>
                         </div>
                         </form>
                     </div>
@@ -240,21 +491,49 @@
     <script src="@Url.Content("~/Scripts/plugins/validate/messages_zh.min.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/plugins/datapicker/bootstrap-datepicker.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/plugins/layer/layer.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/demo/form-advanced-demo.min.js")" type="text/javascript"></script>
     <script type="text/javascript">
+
+        $('#startTime').datepicker({
+            format: 'yyyy-mm-dd',
+            weekStart: 1,
+            autoclose: true,
+            todayBtn: 'linked',
+            language: 'zh-CN'
+        }).on('changeDate', function (ev) {
+            var startTime = $('#startTime').val();
+            if (startTime > $('#endTime').val()) {
+                alert("“开始时间 ”不能晚于“结束时间 ” ！");
+            }
+        });
+        $('#endTime').datepicker({
+            format: 'yyyy-mm-dd',
+            weekStart: 1,
+            autoclose: true,
+            todayBtn: 'linked',
+            language: 'zh-CN'
+        }).on('changeDate', function (ev) {
+            var endTime = $('#endTime').val();
+            if (endTime < $('#startTime').val()) {
+                alert("“结束时间 ”不能早于“开始时间 ” ！");
+            }
+        });
+
+
         var BASE_URL = 'Scripts/plugins/webuploader';
         // 图片上传demo
         jQuery(function () {
             var $ = jQuery,
-        $list = $('#fileList'),
+                $list = $('#fileList'),
             // 优化retina, 在retina下这个值是2
-        ratio = window.devicePixelRatio || 1,
+                ratio = window.devicePixelRatio || 1,
 
             // 缩略图大小
-        thumbnailWidth = 500 * ratio,
-        thumbnailHeight = 300 * ratio,
+                thumbnailWidth = 500 * ratio,
+                thumbnailHeight = 300 * ratio,
 
             // Web Uploader实例
-        uploader;
+                uploader;
 
             // 初始化Web Uploader
             uploader = WebUploader.create({
@@ -289,11 +568,11 @@
                     uploader.removeFile(uploader.getFile(fileid, true));
                 }
                 var $li = $(
-                '<div id="' + file.id + '" class="file-item thumbnail">' +
-                    '<img>' +
-                '</div>'
-                ),
-            $img = $li.find('img');
+                        '<div id="' + file.id + '" class="file-item thumbnail">' +
+                        '<img>' +
+                        '</div>'
+                    ),
+                    $img = $li.find('img');
                 $("#recentPhoto").val(file.name);
                 $list.empty();
                 $list.append($li);
@@ -316,8 +595,8 @@
                 // 避免重复创建
                 if (!$percent.length) {
                     $percent = $('<p class="progress"><span></span></p>')
-                .appendTo($li)
-                .find('span');
+                        .appendTo($li)
+                        .find('span');
                 }
 
                 $percent.css('width', percentage * 100 + '%');
@@ -354,208 +633,7 @@
         });
     </script>
     <script src="@Url.Content("~/Scripts/plugins/webuploader/webuploader.min.js")" type="text/javascript"></script>
-    <script type="text/javascript">
-        //身份证号码的验证规则
-        function isIdCardNo(num) {
-            //if (isNaN(num)) {alert("输入的不是数字！"); return false;} 
-            var len = num.length, re;
-            if (len == 15)
-                re = new RegExp(/^(\d{6})()?(\d{2})(\d{2})(\d{2})(\d{2})(\w)$/);
-            else if (len == 18)
-                re = new RegExp(/^(\d{6})()?(\d{4})(\d{2})(\d{2})(\d{3})(\w)$/);
-            else {
-                //alert("输入的数字位数不对。"); 
-                return false;
-            }
-            var a = num.match(re);
-            if (a != null) {
-                if (len == 15) {
-                    var D = new Date("19" + a[3] + "/" + a[4] + "/" + a[5]);
-                    var B = D.getYear() == a[3] && (D.getMonth() + 1) == a[4] && D.getDate() == a[5];
-                }
-                else {
-                    var D = new Date(a[3] + "/" + a[4] + "/" + a[5]);
-                    var B = D.getFullYear() == a[3] && (D.getMonth() + 1) == a[4] && D.getDate() == a[5];
-                }
-                if (!B) {
-                    //alert("输入的身份证号 "+ a[0] +" 里出生日期不对。"); 
-                    return false;
-                }
-            }
-            if (!re.test(num)) {
-                //alert("身份证最后一位只能是数字和字母。");
-                return false;
-            }
-            return true;
-        }
-        $().ready(function () {
-            $("#birthday").datepicker({
-                todayBtn: "linked"
-            });
-            $("#expireOfId").datepicker({
-                todayBtn: "linked"
-            });
-            // 身份证号码验证 
-            jQuery.validator.addMethod("isIdCardNo", function (value, element) {
-                return this.optional(element) || isIdCardNo(value);
-            }, "请正确输入您的身份证号码");
-            // 手机号码验证    
-            jQuery.validator.addMethod("isMobile", function (value, element) {
-                var length = value.length;
-                return this.optional(element) || (length == 11 && /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/.test(value));
-            }, "请正确填写您的手机号码。");
-            // 电话号码验证    
-            jQuery.validator.addMethod("isPhone", function (value, element) {
-                var tel = /^(\d{3,4}-?)?\d{7,9}$/g;
-                return this.optional(element) || (tel.test(value));
-            }, "请正确填写您的电话号码。");
-            var e = "<i class='fa fa-times-circle'></i> ";
-            $("#customerForm").validate({
-                rules: {
-                    customerName: "required",
-                    userName: {
-                        required: true
-                    },
-                    contractNo: {
-                        required: true
-                    },
-                    customerType: {
-                        required: true
-                    },
-                    loanValue: {
-                        required: true
-                    },
-                    loanPurpose: {
-                        required: true
-                    },
-                    loanType: {
-                        required: true
-                    },
-                    calTimeType: {
-                        required: true
-                    },
-                    startTime: {
-                        required: true
-                    },
-                    periodNum: {
-                        required: true
-                    },
-                    intervalDays: {
-                        required: true
-                    },
-                    monthRate: {
-                        required: true
-                    },
-                    expireOfId: {
-                        required: true
-                    },
-                    bankAccount: {
-                        required: true,
-                        minlength: 5
-                    },
-                    accountName: {
-                        required: true
-                    },
-                    badRecord: {
-                        required: true
-                    },
-                    debtValue: {
-                        required: true
-                    },
-                    houseRight: {
-                        required: true
-                    },
-                    houseEvaluation: {
-                        required: true
-                    },
-                    spouseName: {
-                        required: true
-                    },
-                    spouseIdCard: {
-                        required: true
-                    },
-                    recentPhoto: {
-                        required: true
-                    }
-                },
-                messages: {
-                    //错误消息
-                    customerName: "请输入客户名",
-                    userName: {
-                        required: "请输入客户经理名"
-                    },
-                    contractNo: {
-                        required: "请输入合同编号"
-                    },
-                    customerType: {
-                        required: "请输入客户类型"
-                    },
-                    loanValue: {
-                        required: "请输入贷款金额"
-                    },
-                    loanPurpose: {
-                        required: "请输入贷款用途"
-                    },
-                    loanType: {
-                        required: "请输入贷款类型"
-                    },
-                    calTimeType: {
-                        required: "请输入计算时间方式"
-                    },
-                    startTime: {
-                        required: "请输入起止时间"
-                    },
-                    periodNum: {
-                        required: "请输入期数"
-                    },
-                    intervalDays: {
-                        required: "请输入间隔天数"
-                    },
-                    monthRate: {
-                        required: "请输入月利率"
-                    },
-                    healthStatus: {
-                        required: "请输入计息方法"
-                    },
-                    bankAccount: {
-                        required: "请输入开户银行"
-                    },
-                    accountName: {
-                        required: "请输入开户名"
-                    },
-                    badRecord: {
-                        required: "请输入不良贷款记录"
-                    },
-                    debtValue: {
-                        required: "请输入负债余额"
-                    },
-                    houseRight: {
-                        required: "请输入现住房产权"
-                    },
-                    houseEvaluation: {
-                        required: "请输入自有房产估价"
-                    },
-                    spouseName: {
-                        required: "请输入配偶姓名"
-                    },
-                    spouseIdCard: {
-                        required: "请输入配偶身份证"
-                    },
-                    recentPhoto: {
-                        required: "请输入客户近期照片"
-                    }
-                },
-                submitHandler: function (form) {
-                    ajaxSubmit(form, function (data) {
-                        alert(data.msg);
-                        if (data.success) {
-                            window.location.href = "/Admin/Customer/AllCustomer";
-                        }
-                    });
-                }
-            });
-        });
-    </script>
 </body>
 </html>
+
 

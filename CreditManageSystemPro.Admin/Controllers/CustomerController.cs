@@ -164,5 +164,18 @@ namespace CreditManageSystemPro.Admin.Controllers
                 filePath = filePathName
             });
         }
+
+        public ActionResult WhetherFill(int customerId)
+        {
+            var customer = db.LoanInfo.Where(m => m.customerId == customerId).ToList();
+            if (customer.Count>0)
+            {
+                return Content("true");
+            }
+            else
+            {
+                return Content("false");
+            }
+        }
     }
 }

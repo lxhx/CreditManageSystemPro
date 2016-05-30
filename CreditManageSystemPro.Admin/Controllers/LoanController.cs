@@ -21,9 +21,16 @@ namespace CreditManageSystemPro.Admin.Controllers
         /// 贷款申请
         /// </summary>
         /// <returns></returns>
-        public ActionResult LoanApply()
+        public ActionResult LoanApply(int customerId=0)
         {
-            return View();
+            var loanApplyInfo = db.LoanInfo.Where(m => m.customerId == customerId).FirstOrDefault();
+            AddLoanInfoModel model = new AddLoanInfoModel();
+            Customer customer = db.Customer.Find(customerId);
+            model.customerId = customerId;
+            model.contractNo = Utility.Utils.GetRamCode();
+            model.Customer = customer;
+            model.periodNum = 1;
+            return View(model);
         }
 
         [HttpPost]
@@ -69,6 +76,7 @@ namespace CreditManageSystemPro.Admin.Controllers
                 model.customerId = customerId;
                 model.contractNo = Utility.Utils.GetRamCode();
                 model.Customer = customer;
+                model.periodNum = 1;
             }
             return View(model);
         }

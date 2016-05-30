@@ -86,7 +86,7 @@
                                 <label class="col-sm-1 control-label">
                                     性别</label>
                                 <div class="col-sm-2">
-                                    @Html.DropDownListFor(model => model.sex, (IEnumerable<SelectListItem>)@ViewData["sex"], new { @class = "form-control m-b", name = "sex", id = "sex" })
+                                    @Html.DropDownListFor(model => model.sex, (IEnumerable<SelectListItem>)@ViewData["sex"], new { @class = "form-control m-b", name = "sex", id = "sex" ,style="margin:0"})
                                 </div>
                                 </span>
                             </div>
@@ -97,7 +97,7 @@
                                 <div class="col-sm-2">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        @Html.TextBoxFor(model => model.birthday, new {@class = "form-control", name = "birthday", id = "birthday"})
+                                        @Html.TextBoxFor(model => model.birthday, new { @class = "form-control", name = "birthday", id = "birthday" })
                                     </div>
                                 </div>
                                 </span>
